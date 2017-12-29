@@ -1,4 +1,4 @@
-let parseSuit = suitStr =>
+let parseAndRenderSuit = suitStr =>
   switch suitStr {
   | "H" => Some("Hearts")
   | "D" => Some("Diamonds")
@@ -7,7 +7,7 @@ let parseSuit = suitStr =>
   | _ => None
   };
 
-let parseValue = valueStr =>
+let parseAndRenderValue = valueStr =>
   switch valueStr {
   | "A" => Some("Ace")
   | "K" => Some("King")
@@ -17,14 +17,14 @@ let parseValue = valueStr =>
   | _ => None
   };
 
-let parseCard = cardStr => {
+let parseAndRenderCard = cardStr => {
   let length = Js.String.length(cardStr);
   let suitStr = Js.String.sliceToEnd(~from=length - 1, cardStr);
   let valueStr = Js.String.slice(~from=0, ~to_=length - 1, cardStr);
-  switch (parseValue(valueStr), parseSuit(suitStr)) {
+  switch (parseAndRenderValue(valueStr), parseAndRenderSuit(suitStr)) {
   | (Some(value), Some(suit)) => value ++ " of " ++ suit
   | _ => "-- not valid --"
   };
 };
 
-Js.log(parseCard("JC"));
+Js.log(parseAndRenderCard("JC"));
