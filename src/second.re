@@ -18,9 +18,25 @@ type card =
   | Joker;
 
 module Parser = {
-  let parseNumValue = str => {
+  let parseSuit = suitStr =>
+    switch suitStr {
+    | "H" => Some(Hearts)
+    | "D" => Some(Diamonds)
+    | "C" => Some(Clubs)
+    | "S" => Some(Spades)
+    | _ => None
+    };
+  let parseSuit = suitStr =>
+    switch suitStr {
+    | "H" => Some(Hearts)
+    | "D" => Some(Diamonds)
+    | "C" => Some(Clubs)
+    | "S" => Some(Spades)
+    | _ => None
+    };
+  let parseNumValue = numStr => {
     let parsed =
-      try (Some(int_of_string(str))) {
+      try (numStr |> int_of_string |> some) {
       | Failure(_) => None
       };
     switch parsed {
@@ -35,14 +51,6 @@ module Parser = {
     | "Q" => Some(Queen)
     | "J" => Some(Jack)
     | n => parseNumValue(n)
-    };
-  let parseSuit = suitStr =>
-    switch suitStr {
-    | "H" => Some(Hearts)
-    | "D" => Some(Diamonds)
-    | "C" => Some(Clubs)
-    | "S" => Some(Spades)
-    | _ => None
     };
   let parseOrdinaryCard = cardStr => {
     let length = Js.String.length(cardStr);
@@ -79,7 +87,7 @@ module RenderToString = {
     | 8 => "Eight"
     | 9 => "Nine"
     | 10 => "Ten"
-    | _ => failwith("numToString")
+    | _ => failwith("this is an exception from numToString")
     };
   let valueToString = value =>
     switch value {
@@ -95,13 +103,13 @@ module RenderToString = {
       valueToString(value) ++ " of " ++ suitToString(suit)
     | Joker => "Joker"
     };
-  let defaultErrorCard = "-- card not valid --";
+  let defaultErrorCard = "-- unknown card --";
 };
 
 module Option = {
   let map = (fn, opt) =>
     switch opt {
-    | Some(x) => Some(fn(x))
+    | Some(x) => fn(x) |> some
     | None => None
     };
   let withDefault = (defaultValue, opt) =>
@@ -111,6 +119,7 @@ module Option = {
     };
 };
 
+/* example */
 "J"
 |> Parser.parseCard
 |> Option.map(RenderToString.renderCard)
