@@ -1,3 +1,5 @@
+open Js.String;
+
 let parseAndRenderSuit = suitStr =>
   switch suitStr {
   | "H" => Some("Hearts")
@@ -9,22 +11,35 @@ let parseAndRenderSuit = suitStr =>
 
 let parseAndRenderValue = valueStr =>
   switch valueStr {
-  | "A" => Some("Ace")
-  | "K" => Some("King")
-  | "Q" => Some("Queen")
-  | "J" => Some("Jack")
+  | "2" => Some("Two")
+  | "3" => Some("Three")
+  | "4" => Some("Four")
+  | "5" => Some("Five")
+  | "6" => Some("Six")
+  | "7" => Some("Seven")
+  | "8" => Some("Eight")
+  | "9" => Some("Nine")
   | "10" => Some("Ten")
+  | "J" => Some("Jack")
+  | "Q" => Some("Queen")
+  | "K" => Some("King")
+  | "A" => Some("Ace")
   | _ => None
   };
 
 let parseAndRenderCard = cardStr => {
-  let length = Js.String.length(cardStr);
-  let suitStr = Js.String.sliceToEnd(~from=length - 1, cardStr);
-  let valueStr = Js.String.slice(~from=0, ~to_=length - 1, cardStr);
-  switch (parseAndRenderValue(valueStr), parseAndRenderSuit(suitStr)) {
+  /* Separating the input string: */
+  let length = length(cardStr);
+  let suitStr = sliceToEnd(~from=length - 1, cardStr);
+  let valueStr = slice(~from=0, ~to_=length - 1, cardStr);
+  /* Parsing and rendering the strings with our functions: */
+  let renderedSuit = parseAndRenderSuit(suitStr);
+  let renderedValue = parseAndRenderValue(valueStr);
+  /* If inputs were valid, print the card: */
+  switch (renderedValue, renderedSuit) {
   | (Some(value), Some(suit)) => value ++ " of " ++ suit
-  | _ => "-- not valid --"
+  | _ => "-- unknown card --"
   };
 };
 
-Js.log(parseAndRenderCard("JC"));
+"QC" |> parseAndRenderCard |> Js.log;
